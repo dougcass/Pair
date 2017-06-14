@@ -29,11 +29,11 @@ passport.deserializeUser(User.deserializeUser());
 //============
 
 app.get("/", function(req, res){
-    res.render("home");
+    res.render("landing");
 });
 
-app.get("/secret",isLoggedIn, function(req, res){
-   res.render("secret"); 
+app.get("/home",isLoggedIn, function(req, res){
+   res.render("home"); 
 });
 
 // Auth Routes
@@ -50,7 +50,7 @@ app.post("/register", function(req, res){
             return res.render('register');
         }
         passport.authenticate("local")(req, res, function(){
-           res.redirect("/secret");
+           res.redirect("/home");
         });
     });
 });
@@ -63,7 +63,7 @@ app.get("/login", function(req, res){
 //login logic
 //middleware
 app.post("/login", passport.authenticate("local", {
-    successRedirect: "/secret",
+    successRedirect: "/home",
     failureRedirect: "/login"
 }) ,function(req, res){
 });
