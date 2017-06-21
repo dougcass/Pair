@@ -6,12 +6,12 @@ var express               = require("express"),
     LocalStrategy         = require("passport-local"),
     passportLocalMongoose = require("passport-local-mongoose")
     
-mongoose.connect("mongodb://localhost/auth_demo_app");
+mongoose.connect("mongodb://localhost/pair_up_app");
 var app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(require("express-session")({
-    secret: "Rusty is the best and cutest dog in the world",
+    secret: "secret key",
     resave: false,
     saveUninitialized: false
 }));
@@ -28,15 +28,24 @@ passport.deserializeUser(User.deserializeUser());
 // ROUTES
 //============
 
+//landing page
 app.get("/", function(req, res){
     res.render("landing");
 });
 
+//user home page
 app.get("/home",isLoggedIn, function(req, res){
    res.render("home"); 
 });
 
-// Auth Routes
+//create time slot page
+app.get("/new", isLoggedIn, function(req, res){
+    res.render("slots/new");
+});
+
+
+
+// AUTH ROUTES(passport)
 
 //show sign up form
 app.get("/register", function(req, res){
@@ -73,15 +82,12 @@ app.get("/logout", function(req, res){
     res.redirect("/");
 });
 
-
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next();
     }
     res.redirect("/login");
 }
-
-
 
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("Server Has Started!");
